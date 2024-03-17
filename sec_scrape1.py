@@ -18,7 +18,7 @@ from requests.exceptions import (
 import pandas as pd
 import pyarrow
 from pandas import DataFrame
-from logger_file import setup_logs
+from logger_file import logger
 
 import pyspark
 from pyspark.sql import SparkSession, DataFrame, functions as F, types as T, Row
@@ -145,9 +145,9 @@ if __name__ == "__main__":
     client = ScrapingBeeClient(api_key=api_key)
     logger.info(f"Scraping Table content Started")
     companies_df = pd.read_parquet("data/output/companies_details/companies_detail1.parquet")
-    year = 2021
+    year = 2020
     companies_df = companies_df[companies_df['year'] == year]
-    companies_df = companies_df.drop_duplicates(subset=['url'], keep='first')
+    companies_df = companies_df.drop_duplicates(subset=['cik_number', 'accessionNumber', 'primaryDocument', 'reportDate'], keep='first')
     companies_df['row_id'] = companies_df.sort_values(by='cik_number') \
                                       .reset_index(drop=True) \
                                       .index + 1
