@@ -116,7 +116,7 @@ def scrap_table(dict_records: dict):
     return tables
 
 def process_chunked_df(processed_rows, output_path):
-    out = f"data/output/table_contents/{output_path}"
+    out = f"data/output/table_contents/year_wise_content/{output_path}"
     if len(processed_rows) > 0:
         logger.info(len(processed_rows))
         table_df = pd.DataFrame(processed_rows, columns=["cik_name", "reporting_date", "url", "contents"])
@@ -140,7 +140,7 @@ def process_batch_and_save(batch_df, batch_num, year, semaphore):
 
 
 if __name__ == "__main__":
-    api_key = api
+    api_key = 'api'
     global client
     client = ScrapingBeeClient(api_key=api_key)
     logger.info(f"Scraping Table content Started")
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     batch_size = 100
     num_batches = (total_items + batch_size - 1) // batch_size
     logger.info(f"Total Number of Batches: {num_batches}")
-    semaphore = Semaphore(5)  # Control number of concurrent threads
+    semaphore = Semaphore(10)  # Control number of concurrent threads
     for i in range(0,num_batches):
         start_idx = i * batch_size
         end_idx = min((i + 1) * batch_size, total_items)
